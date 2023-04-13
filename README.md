@@ -1,7 +1,9 @@
 # AutumnUpgrades
 Relay script for KoLmafia, for the web game Kingdom of Loathing. Helps finding where to find upgrades for the Autumn-aton.
 
-#Installation:
+## Installation:
+
+Run the following int the Graphical CLI in KolMafia
 
 ```git checkout MattiasKro/AutumnUpgrades```
 
