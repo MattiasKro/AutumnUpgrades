@@ -27,10 +27,10 @@ AutumnDestinationGroup createDestinationGroup(string difficulty, string location
 }
 
 string getUpgradeDesctiption(AutumnDestinationGroup destination) {
-		if ((!destination.upgraded) && (destination.description != "Other")) {
-			return "*"+destination.description;
-		}
-		return destination.description;
+	if ((!destination.upgraded) && (destination.description != "Other")) {
+		return "*"+destination.description;
+	}
+	return destination.description;
 }
 
 string buildOption(AutumnDestinationGroup destinationGroup) {
@@ -86,18 +86,17 @@ void handleAutumnAton(string page_text)
 	buffer extra_text;
 
 	extra_text.append("\t\t<select required name=\"heythereprogrammer\">\n");
-    extra_text.append("\t\t\t<option selected disabled value=\"\">-- select a location --</option>\n");
+	extra_text.append("\t\t\t<option selected disabled value=\"\">-- select a location --</option>\n");
 	foreach key, destinationGroup in groups {
 		extra_text.append(buildOption(destinationGroup));
 	}
 	extra_text.append("\t\t</select>\n");
+	extra_text.append("<br><input id=\"hideComplete\" type=\"checkbox\" onchange=\"javascript:document.querySelectorAll('optgroup').forEach(element => {if (!element.label.startsWith('*')) { element.hidden = this.checked;}});\"/><label for=\"hideCompletedanon\">Show only missing upgrades</label>");
 
 // Replace the old selector with the new
-//	string new_page_text = page_text.replace_string("</td></tr></table></center></td>", extra_text + "</td></tr></table></center></td>");
 	string new_page_text = page_text.replace_string("</select>", "</select> -->");
 	new_page_text = new_page_text.replace_string("<select required", extra_text + " <!-- <select required");
 	
 	write(new_page_text);
-
 }
 
