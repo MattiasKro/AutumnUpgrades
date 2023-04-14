@@ -13,4 +13,4 @@ Groups possible destinations after what upgrade they provide, and marks upgrades
 
 ## Example:
  
-![Picture showing the new destination selector](https://github.com/MattiasKro/AutumnUpgrades/main/Example.png "The new destination selector")
+![Picture showing the new destination selector](https://raw.githubusercontent.com/MattiasKro/AutumnUpgrades/main/Example.png "The new destination selector")
