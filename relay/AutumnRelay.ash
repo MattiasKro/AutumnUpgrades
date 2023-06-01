@@ -33,19 +33,26 @@ string getUpgradeDesctiption(AutumnDestinationGroup destination) {
 	return destination.description;
 }
 
-string buildOption(AutumnDestinationGroup destinationGroup) {
+string buildLocationTypeOption(AutumnDestinationGroup [int] destinationList) {
 	buffer result;
-	if (count(destinationGroup.destinations) >= 1) {
-		result.append("\t\t\t<optgroup");
-		if (destinationGroup.upgraded) {
-			result.append(" class=\"upgraded\"");
+	result.append("\t\t<select name=\"destinationtypepicker\"");
+	result.append(" onchange=\"javascript:{var sel = this.value;var opts = document.getElementById('heythereprogrammer');");
+	result.append("for (i = 0; i < opts.length; i++) {");
+	result.append("var el = opts.options[i];if ((sel == 'all') || (el.getAttribute('data-zone') == sel)) {el.hidden = false;");
+	result.append("} else { el.hidden = true; }}}\"");
+	result.append(">\n");
+	result.append("\t\t\t<option selected value=\"all\">All zone types</option>\n");
+	foreach key, dest in destinationList {
+		if (count(dest.destinations) >= 1) {
+			string className = "zone-" + dest.difficulty + "-" + dest.locationType;
+			if (dest.upgraded) {
+				className += " upgraded";
+			}
+			result.append("\t\t\t\t<option value=\"zone-" + to_lower_case(dest.difficulty) + "-" + to_lower_case(dest.locationType) + "\">");
+			result.append(getUpgradeDesctiption(dest) + "</option>\n");
 		}
-		result.append(" label=\"" + getUpgradeDesctiption(destinationGroup) + "\">\n");
-		foreach key, loc in destinationGroup.destinations {
-			result.append("\t\t\t\t<option  value=\"" + loc.id + "\">" + loc + "</option>\n");
-		}
-	result.append("\t\t</optgroup>\n");
 	}
+	result.append("\t\t</select>\n");
 	return result;
 }
 
@@ -63,6 +70,7 @@ void handleAutumnAton(string page_text)
 	groups[9] = createDestinationGroup("Low", "underground", "-11 expedition length", "leftleg1.png", page_text);
 	groups[10] = createDestinationGroup("other", "other", "", "", page_text);
 
+	buffer newLocationPicker;
 
 // Find all possible locations where we can send the autumn-aton
 	matcher locmatcher = create_matcher("<option *?value\=\"(.*?)\">.*?</option>", page_text);
@@ -79,19 +87,18 @@ void handleAutumnAton(string page_text)
 			if (!found) {
 					groups[10].destinations[count(groups[10].destinations)] = loc;
 			}
+			newLocationPicker.append("\t\t\t<option data-zone=\"zone-"+to_lower_case(loc.difficulty_level)+"-"+to_lower_case(loc.environment)+"\" value=\""+loc.id+"\">"+loc+"</option>\n");
 		}
 	}
 
 // Build the new selector
 	buffer extra_text;
 
-	extra_text.append("\t\t<select required name=\"heythereprogrammer\">\n");
+	extra_text.append(buildLocationTypeOption(groups));
+	extra_text.append("\t\t<select required id=\"heythereprogrammer\" name=\"heythereprogrammer\">\n");
 	extra_text.append("\t\t\t<option selected disabled value=\"\">-- select a location --</option>\n");
-	foreach key, destinationGroup in groups {
-		extra_text.append(buildOption(destinationGroup));
-	}
+	extra_text.append(newLocationPicker);
 	extra_text.append("\t\t</select>\n");
-	extra_text.append("<br><input id=\"hideComplete\" type=\"checkbox\" onchange=\"javascript:document.querySelectorAll('optgroup').forEach(element => {if (!element.label.startsWith('*')) { element.hidden = this.checked;}});\"/><label for=\"hideCompletedanon\">Show only missing upgrades</label>");
 
 // Replace the old selector with the new
 	string new_page_text = page_text.replace_string("</select>", "</select> -->");
