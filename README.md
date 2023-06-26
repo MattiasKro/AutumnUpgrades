@@ -17,6 +17,3 @@ Moved the button to send away the Atumn-aton to the right side and gave it a gre
 ![Picture showing the new destination selector](https://github.com/MattiasKro/AutumnUpgrades/assets/39094075/202c7637-2e13-416c-95b3-c7e807eb5966)
 
 ![Picture showing the location filter with upgrades and standard reward](https://github.com/MattiasKro/AutumnUpgrades/assets/39094075/16428acf-2552-499e-bfca-803cc7f068e9)
-
-
-![Picture showing the new destination selector](https://raw.githubusercontent.com/MattiasKro/AutumnUpgrades/main/Example.png "The new destination selector")
