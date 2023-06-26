@@ -56,18 +56,26 @@ string buildLocationTypeOption(AutumnDestinationGroup [int] destinationList) {
 	return result;
 }
 
+string getZoneNameForLocation(location loc) {
+	if ((to_lower_case(loc.difficulty_level) ≈ "unknown") || (to_lower_case(loc.environment) ≈ "unknown")) {
+		return "zone-other-other";
+	} else {
+		return "zone-"+to_lower_case(loc.difficulty_level)+"-"+to_lower_case(loc.environment);
+	}
+}
+
 void handleAutumnAton(string page_text)
 {
 	AutumnDestinationGroup [int] groups;
-	groups[1] = createDestinationGroup("High", "indoor", "'better' items", "radardish.png", page_text);
-	groups[2] = createDestinationGroup("High", "outdoor", "'better' items", "periscope.png", page_text);
-	groups[3] = createDestinationGroup("High", "underground", "+experience", "dualexhaust.png", page_text);
-	groups[4] = createDestinationGroup("Mid", "indoor", "-11 expedition length", "rightleg1.png", page_text);
-	groups[5] = createDestinationGroup("Mid", "outdoor", "+1 zone item", "rightarm1.png", page_text);
-	groups[6] = createDestinationGroup("Mid", "underground", "+1 autumn item", "cowcatcher.png", page_text);
-	groups[7] = createDestinationGroup("Low", "indoor", "+1 zone item", "leftarm1.png", page_text);
-	groups[8] = createDestinationGroup("Low", "outdoor", "+experience", "base_blackhat.png", page_text);
-	groups[9] = createDestinationGroup("Low", "underground", "-11 expedition length", "leftleg1.png", page_text);
+	groups[1] = createDestinationGroup("High", "indoor", "'better' items | Breeze", "radardish.png", page_text);
+	groups[2] = createDestinationGroup("High", "outdoor", "'better' items | Pendant", "periscope.png", page_text);
+	groups[3] = createDestinationGroup("High", "underground", "+experience | Wisdom", "dualexhaust.png", page_text);
+	groups[4] = createDestinationGroup("Mid", "indoor", "-11 expedition length | Donut", "rightleg1.png", page_text);
+	groups[5] = createDestinationGroup("Mid", "outdoor", "+1 zone item | Shield", "rightarm1.png", page_text);
+	groups[6] = createDestinationGroup("Mid", "underground", "+1 autumn item | Dollar", "cowcatcher.png", page_text);
+	groups[7] = createDestinationGroup("Low", "indoor", "+1 zone item | Ale", "leftarm1.png", page_text);
+	groups[8] = createDestinationGroup("Low", "outdoor", "+experience | Leaf", "base_blackhat.png", page_text);
+	groups[9] = createDestinationGroup("Low", "underground", "-11 expedition length | Sweater", "leftleg1.png", page_text);
 	groups[10] = createDestinationGroup("other", "other", "", "", page_text);
 
 	buffer newLocationPicker;
@@ -87,7 +95,7 @@ void handleAutumnAton(string page_text)
 			if (!found) {
 					groups[10].destinations[count(groups[10].destinations)] = loc;
 			}
-			newLocationPicker.append("\t\t\t<option data-zone=\"zone-"+to_lower_case(loc.difficulty_level)+"-"+to_lower_case(loc.environment)+"\" value=\""+loc.id+"\">"+loc+"</option>\n");
+			newLocationPicker.append("\t\t\t<option data-zone=\""+ getZoneNameForLocation(loc) + "\" value=\""+loc.id+"\">"+loc+"</option>\n");
 		}
 	}
 
@@ -100,9 +108,14 @@ void handleAutumnAton(string page_text)
 	extra_text.append(newLocationPicker);
 	extra_text.append("\t\t</select>\n");
 
+// The old submit button
+	string oldbutton = " <input type=\"submit\" class=\"button\" value=\"Send your autumn-aton to: \" />";
+	string newbutton = " <input type=\"submit\" class=\"button\" style=\"background-color: greenyellow;\" value=\" GO \" />";
+
 // Replace the old selector with the new
-	string new_page_text = page_text.replace_string("</select>", "</select> -->");
-	new_page_text = new_page_text.replace_string("<select required", extra_text + " <!-- <select required");
+	string new_page_text = page_text.replace_string(oldbutton, "");
+	new_page_text = new_page_text.replace_string("</select>", "</select> -->");
+	new_page_text = new_page_text.replace_string("<select required", extra_text + newbutton + " <!-- <select required");
 	
 	write(new_page_text);
 }
